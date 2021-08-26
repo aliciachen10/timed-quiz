@@ -10,6 +10,8 @@ var highScores;
 var question = document.querySelector(".question");
 var answers = document.querySelector(".answers");
 
+var answerButtonArray = [];
+
 //array of questions the user will answer
 var questions =[{question: "Commonly used data types DO NOT include:", 
     choices: ["strings", "booleans", "alerts", "numbers"], 
@@ -49,8 +51,6 @@ function startGame() {
     question.textContent = questions[0]['question'];
     //CREATE FOUR ANSWER BUTTONS ONE FOR EACH POSSIBLE ANSWER IN THE ARRAY 
 
-    var answerButtonArray = [];
-
     for (var i = 0; i < questions[0]['choices'].length; i++){
       answerButtonArray[i] = document.createElement('button');
       answerButtonArray[i].innerHTML = questions[0]['choices'][i];
@@ -72,6 +72,10 @@ questionNumber = 1;
 
 // TO DO: un-replicate the code in the start function
 function answerSelect() {
+  console.log(answerButtonArray[1]);
+  // console.log(answerButtonArray[2].innerHTML)
+  // console.log(answerButtonArray[3].innerHTML)
+  // console.log(answerButtonArray[4].innerHTML)
 
   question.textContent = questions[questionNumber]['question'];
   //need to clear the div
