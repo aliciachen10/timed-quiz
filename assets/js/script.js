@@ -62,28 +62,44 @@ function startGame() {
 
     //add event listener for answer button 
     for (var i = 0; i < questions[0]['choices'].length; i++){
-      answerButtonArray[i].addEventListener("click", answerSelect());
+      answerButtonArray[i].addEventListener("click", answerSelect);
     };
 
 };
 
 
+questionNumber = 1;
 
-
+// TO DO: un-replicate the code in the start function
 function answerSelect() {
-  question.textContent = questions[1]['question'];
-  //CREATE FOUR ANSWER BUTTONS ONE FOR EACH POSSIBLE ANSWER IN THE ARRAY 
 
+  question.textContent = questions[questionNumber]['question'];
+  //need to clear the div
+  answers.innerHTML ="";
+
+  //NEED TO INDICATE WHETHER THE QUESTION WAS CORRECT OR INCORRECT AND INCREMENT THE QUESTION; 
+
+  //CREATE FOUR ANSWER BUTTONS ONE FOR EACH POSSIBLE ANSWER IN THE ARRAY 
   var answerButtonArray = [];
 
-  for (var i = 0; i < questions[1]['choices'].length; i++){
+  for (var i = 0; i < questions[questionNumber]['choices'].length; i++){
     answerButtonArray[i] = document.createElement('button');
-    answerButtonArray[i].innerHTML = questions[1]['choices'][i];
+    answerButtonArray[i].innerHTML = questions[questionNumber]['choices'][i];
     answers.appendChild(answerButtonArray[i]);
 
     linebreak = document.createElement("br");
     answers.appendChild(linebreak);
   }
+
+  console.log(document.getElementById('answerButtonArray[1]').textContent)
+
+
+  //add event listener for answer button 
+  for (var i = 0; i < questions[questionNumber]['choices'].length; i++){
+    answerButtonArray[i].addEventListener("click", answerSelect);
+  };
+
+  questionNumber ++;
 };
 
 function startTimer() {
