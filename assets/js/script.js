@@ -1,5 +1,6 @@
 var startButton = document.querySelector(".start-button");
-
+var timerElement = document.querySelector(".timer-count");
+var correctStatus = document.querySelector(".correct-status");
 var rightCounter = 0;
 var wrongCounter = 0;
 var timer;
@@ -11,6 +12,7 @@ var question = document.querySelector(".question");
 var answers = document.querySelector(".answers");
 
 var answerButtonArray = [];
+var questionNumber = 0;
 
 //array of questions the user will answer
 var questions =[{question: "Commonly used data types DO NOT include:", 
@@ -42,49 +44,53 @@ function startGame() {
     timerCount = 40;
     //prevents start button from being clicked when round is in progress 
     startButton.disabled = true; 
+    startButton.remove();
 
     //TODO: INSERT OTHER FUNCTIONS THAT BELONG HERE 
-    // startTimer()
-    // TO DO: GET RID OF START BUTTON 
-    answers.textContent = "";
-
-    question.textContent = questions[0]['question'];
-    //CREATE FOUR ANSWER BUTTONS ONE FOR EACH POSSIBLE ANSWER IN THE ARRAY 
-
-    for (var i = 0; i < questions[0]['choices'].length; i++){
-      answerButtonArray[i] = document.createElement('button');
-      answerButtonArray[i].innerHTML = questions[0]['choices'][i];
-      answers.appendChild(answerButtonArray[i]);
-
-      linebreak = document.createElement("br");
-      answers.appendChild(linebreak);
-    }
-
-    //add event listener for answer button 
-    for (var i = 0; i < questions[0]['choices'].length; i++){
-      answerButtonArray[i].addEventListener("click", answerSelect);
-    };
-
+    startTimer()
+    newQuestion()
 };
 
-
-questionNumber = 1;
+// The setTimer function starts and stops the timer and triggers winGame() and loseGame()
+// TO DO: make timer responsive to whether the person has finished the game or not.
+function startTimer() {
+  // Sets timer
+  timer = setInterval(function() {
+    timerCount--;
+    timerElement.textContent = timerCount;
+    // if (timerCount >= 0) {
+    //   // Tests if win condition is met
+    //   if (isWin && timerCount > 0) {
+    //     // Clears interval and stops timer
+    //     clearInterval(timer);
+    //     winGame();
+    //   }
+    // }
+    // // Tests if time has run out
+    // if (timerCount === 0) {
+    //   // Clears interval
+    //   clearInterval(timer);
+    //   loseGame();
+    // }
+  }, 1000);
+}
 
 // TO DO: un-replicate the code in the start function
-function answerSelect() {
-  console.log(answerButtonArray[1]);
-  // console.log(answerButtonArray[2].innerHTML)
-  // console.log(answerButtonArray[3].innerHTML)
-  // console.log(answerButtonArray[4].innerHTML)
+function newQuestion() {
+  // console.log(answerButtonArray[1].innerHTML);
+
+  //NEXT THING TO DO ::: ONCLICK. IF CORRECT BUTTON IS CLICKED DISPLAY RIGHT OTHERWISE DISPLAY WRONG. 
+  // if (answerButtonArray[1].innerHTML === questions[1]['correct answer']) {
+  //   console.log("CORRECT!")
+  // }
+  // //need to clear the div
 
   question.textContent = questions[questionNumber]['question'];
-  //need to clear the div
-  answers.innerHTML ="";
+  answers.innerHTML =""; //or answers.textContent ="";
 
   //NEED TO INDICATE WHETHER THE QUESTION WAS CORRECT OR INCORRECT AND INCREMENT THE QUESTION; 
 
   //CREATE FOUR ANSWER BUTTONS ONE FOR EACH POSSIBLE ANSWER IN THE ARRAY 
-  var answerButtonArray = [];
 
   for (var i = 0; i < questions[questionNumber]['choices'].length; i++){
     answerButtonArray[i] = document.createElement('button');
@@ -95,36 +101,50 @@ function answerSelect() {
     answers.appendChild(linebreak);
   }
 
-  console.log(document.getElementById('answerButtonArray[1]').textContent)
-
 
   //add event listener for answer button 
   for (var i = 0; i < questions[questionNumber]['choices'].length; i++){
-    answerButtonArray[i].addEventListener("click", answerSelect);
+    answerButtonArray[i].addEventListener("click", newQuestion);
+  };
+  
+  if (event.currentTarget.innerHTML != "Start Quiz") {
+    questionCorrect();
+  }
+
+  if (questionNumber == questions.length) {
+    finalScoreScreen();
+  }
+
+};
+
+function finalScoreScreen() {
+  question.textContent = "All Done!";
+  answers.innerHTML ="Your Final Score is " + rightCounter*10;
+}
+
+function questionCorrect() {
+  console.log("WHAT WAS CLICKED >>>", event.currentTarget.innerHTML);
+  console.log("CORRECT ANSWER >>>", questions[questionNumber]['correctAnswer']);
+  if(event.currentTarget.innerHTML == questions[questionNumber]['correctAnswer']){
+    correctStatus.innerHTML = 'CORRECT!!' + rightCounter;
+
+    setTimeout(function(){
+        correctStatus.innerHTML = '';
+    }, 800);
+
+    rightCounter ++;
+  } else {
+      correctStatus.innerHTML = 'INCORRECT' + wrongCounter;
+
+      setTimeout(function(){
+          correctStatus.innerHTML = '';
+      }, 800);
+    wrongCounter ++;
   };
 
   questionNumber ++;
-};
 
-function startTimer() {
-    // Sets timer
-    timer = setInterval(function() {
-      timerCount--;
-      timerElement.textContent = timerCount;
-      if (timerCount >= 0) {
-        // Tests if win condition is met
-        if (isWin && timerCount > 0) {
-          // Clears interval and stops timer
-          clearInterval(timer);
-          winGame();
-        }
-      }
-      // Tests if time has run out
-      if (timerCount === 0) {
-        // Clears interval
-        clearInterval(timer);
-        loseGame();
-      }
-    }, 1000);
-  }
+}
 
+//questions
+//why does it say EVENT is deprecated
