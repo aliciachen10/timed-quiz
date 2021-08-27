@@ -117,9 +117,35 @@ function newQuestion() {
 
 };
 
+//should probably put this up top 
+submitButton = document.createElement('button');
+submitButton.innerHTML = "Submit";
+
 function finalScoreScreen() {
+
+
   question.textContent = "All Done!";
   answers.innerHTML ="Your Final Score is " + rightCounter*10;
+
+  var text = document.createElement('div');
+  text.innerHTML = "Enter Initials: <input type='text' value='' class='initials' />";
+  answers.appendChild(text);
+
+  answers.appendChild(submitButton);
+
+  
+
+ 
+}
+var initials = document.querySelector(".initials");
+submitButton.addEventListener("click", submitScore);
+
+function submitScore() {
+  console.log(initials)
+  //rightCounter*10
+
+  //highScores.push({"name": text.input(), "score": rightCounter*10})
+
 }
 
 function questionCorrect() {
