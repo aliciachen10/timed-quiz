@@ -95,63 +95,19 @@ function newQuestion() {
   for (var i = 0; i < questions[questionNumber]['choices'].length; i++){
     answerButtonArray[i] = document.createElement('button');
     answerButtonArray[i].innerHTML = questions[questionNumber]['choices'][i];
+    answerButtonArray[i].addEventListener("click", questionCorrect);
     answers.appendChild(answerButtonArray[i]);
 
     linebreak = document.createElement("br");
     answers.appendChild(linebreak);
   }
-
-
-  //add event listener for answer button 
-  for (var i = 0; i < questions[questionNumber]['choices'].length; i++){
-    answerButtonArray[i].addEventListener("click", newQuestion);
-  };
   
-  if (event.currentTarget.innerHTML != "Start Quiz") {
-    questionCorrect();
-  }
-
-  if (questionNumber == questions.length) {
-    finalScoreScreen();
-  }
-
 };
 
-//should probably put this up top 
-submitButton = document.createElement('button');
-submitButton.innerHTML = "Submit";
-
-function finalScoreScreen() {
-
-
-  question.textContent = "All Done!";
-  answers.innerHTML ="Your Final Score is " + rightCounter*10;
-
-  var text = document.createElement('div');
-  text.innerHTML = "Enter Initials: <input type='text' value='' class='initials' />";
-  answers.appendChild(text);
-
-  answers.appendChild(submitButton);
-
-  
-
- 
-}
-var initials = document.querySelector(".initials");
-submitButton.addEventListener("click", submitScore);
-
-function submitScore() {
-  console.log(initials)
-  //rightCounter*10
-
-  //highScores.push({"name": text.input(), "score": rightCounter*10})
-
-}
-
-function questionCorrect() {
+function questionCorrect(event) {
   console.log("WHAT WAS CLICKED >>>", event.currentTarget.innerHTML);
   console.log("CORRECT ANSWER >>>", questions[questionNumber]['correctAnswer']);
-  if(event.currentTarget.innerHTML == questions[questionNumber]['correctAnswer']){
+  if(event.currentTarget.innerHTML === questions[questionNumber]['correctAnswer']){
     correctStatus.innerHTML = 'CORRECT!!' + rightCounter;
 
     setTimeout(function(){
@@ -170,7 +126,85 @@ function questionCorrect() {
 
   questionNumber ++;
 
+  if (event.currentTarget.innerHTML != "Start Quiz") {
+    newQuestion();
+  }
+
+  if (questionNumber == (questions.length - 1)) {
+    finalScoreScreen();
+  }
+
 }
 
-//questions
-//why does it say EVENT is deprecated
+var initials = localStorage.getItem("initials");
+
+// counter.textContent = count;
+
+function submitScore() {
+  var initials = document.getElementById("initials").value;
+
+  console.log(initials);
+  localStorage.setItem("initials", initials);
+  localStorage.setItem("score", rightCounter*10);
+  //rightCounter*10
+
+
+  location.href = "highscores.html";
+
+  renderHighScores();
+
+
+  //highScores.push({"name": text.input(), "score": rightCounter*10})
+
+}
+
+var nameAndScore = {
+  initials: initials, 
+  score: score, 
+}; //TO DO: REVISE THIS SO THAT IT IS AN ARRAY THAT CONTAINS OBJECTS? OR VICE VERSA
+
+function renderHighScores() {
+
+  var nameAndScore = JSON.parse(localStorage.getItem("nameAndScore"));
+
+  console.log(nameAndScore);
+  // if (nameAndScore !== null) {
+  //   document.querySelector(".answers").textContent = nameAndScore.name + " - " + 
+  //   nameAndScore.score
+  // }
+}
+
+function finalScoreScreen() {
+
+
+  question.textContent = "All Done!";
+  answers.innerHTML ="Your Final Score is " + rightCounter*10;
+
+
+  var text = document.createElement('div');
+  var input = document.createElement('input');
+  input.setAttribute('id', 'initials')
+  input.setAttribute('type', 'text');
+  // input.innerHTML = "Enter Initials: <input type='text' value='' id='initials' />";
+  input.setAttribute('value', '');
+  
+  // var initialz = document.getElementById("initials");
+  text.append(input)
+  answers.appendChild(text);
+
+  
+  //should probably put this up top 
+  submitButton = document.createElement('button');
+  submitButton.innerHTML = "Submit";
+  submitButton.addEventListener("click", submitScore);
+
+//   var initials = document.querySelector(".initials");
+  answers.appendChild(submitButton);
+
+  // console.log(initialz)
+
+  
+
+ 
+}
+
