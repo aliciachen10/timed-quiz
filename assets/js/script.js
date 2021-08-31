@@ -144,8 +144,12 @@ function submitScore() {
   var initials = document.getElementById("initials").value;
 
   console.log(initials);
-  localStorage.setItem("initials", initials);
-  localStorage.setItem("score", rightCounter*10);
+  var nameAndScore = {
+    userInitials: initials,
+    userScore: rightCounter*10
+  }
+  localStorage.setItem("nameAndScore", JSON.stringify(nameAndScore));
+  // localStorage.setItem("score", rightCounter*10);
   //rightCounter*10
 
 
@@ -158,21 +162,21 @@ function submitScore() {
 
 }
 
-var nameAndScore = {
-  initials: initials, 
-  score: score, 
-}; //TO DO: REVISE THIS SO THAT IT IS AN ARRAY THAT CONTAINS OBJECTS? OR VICE VERSA
+// var nameAndScore = {
+//   initials: initials, 
+//   score: score, 
+// }; //TO DO: REVISE THIS SO THAT IT IS AN ARRAY THAT CONTAINS OBJECTS? OR VICE VERSA
 
-function renderHighScores() {
+// function renderHighScores() {
 
-  var nameAndScore = JSON.parse(localStorage.getItem("nameAndScore"));
+//   var nameAndScore = JSON.parse(localStorage.getItem("nameAndScore"));
 
-  console.log(nameAndScore);
-  // if (nameAndScore !== null) {
-  //   document.querySelector(".answers").textContent = nameAndScore.name + " - " + 
-  //   nameAndScore.score
-  // }
-}
+//   console.log(nameAndScore);
+//   // if (nameAndScore !== null) {
+//   //   document.querySelector(".answers").textContent = nameAndScore.name + " - " + 
+//   //   nameAndScore.score
+//   // }
+// }
 
 function finalScoreScreen() {
 
