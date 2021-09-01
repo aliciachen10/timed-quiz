@@ -67,11 +67,11 @@ function startTimer() {
     //   }
     // }
     // // Tests if time has run out
-    // if (timerCount === 0) {
-    //   // Clears interval
-    //   clearInterval(timer);
-    //   loseGame();
-    // }
+    if (timerCount === 0) {
+      // Clears interval
+      clearInterval(timer);
+      finalScoreScreen()
+    }
   }, 1000);
 }
 
@@ -122,6 +122,12 @@ function questionCorrect(event) {
           correctStatus.innerHTML = '';
       }, 800);
     wrongCounter ++;
+    timerCount -= 5;
+    timerElement.textContent += " -5 seconds"
+    setTimeout(function(){
+      timerElement.textContent = timerCount;
+  }, 800);
+    
   };
 
   questionNumber ++;
@@ -131,6 +137,8 @@ function questionCorrect(event) {
   }
 
   if (questionNumber == (questions.length - 1)) {
+    timerElement.textContent = 0
+    clearInterval(timer)
     finalScoreScreen();
   }
 
@@ -146,16 +154,12 @@ function submitScore() {
   console.log(initials);
   var nameAndScore = {
     userInitials: initials,
-    userScore: rightCounter*10
+    userScore: rightCounter*10 - wrongCounter*5
   }
   localStorage.setItem("nameAndScore", JSON.stringify(nameAndScore));
-  // localStorage.setItem("score", rightCounter*10);
-  //rightCounter*10
-
 
   location.href = "highscores.html";
 
-  renderHighScores();
 
 
   //highScores.push({"name": text.input(), "score": rightCounter*10})
@@ -180,9 +184,9 @@ function submitScore() {
 
 function finalScoreScreen() {
 
-
+  timerElement.textContent = "0";
   question.textContent = "All Done!";
-  answers.innerHTML ="Your Final Score is " + rightCounter*10;
+  answers.innerHTML ="Your Final Score is " + (rightCounter*10 - wrongCounter*5);
 
 
   var text = document.createElement('div');
