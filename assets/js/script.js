@@ -128,24 +128,29 @@ function questionCorrect(event) {
 
 }
 
-var allEntries = [];
-var existingEntries = JSON.parse(localStorage.getItem("allEntries"));
+// var allEntries = [];
+// localStorage.setItem("allEntries", allEntries);
 // var initials = localStorage.getItem("initials");
+var existingEntries = JSON.parse(localStorage.getItem("allEntries")) || [];
 
 function submitScore() {
   var initials = document.getElementById("initials").value;
-
 
   console.log(initials);
   var entry = {
     "userInitials": initials,
     "userScore": rightCounter*10 - wrongCounter*5
   }
-  localStorage.setItem("entry", JSON.stringify(entry));
+  // localStorage.setItem("entry", JSON.stringify(entry));
+  if (initials) {
   existingEntries.push(entry);
   localStorage.setItem("allEntries", JSON.stringify(existingEntries));
 
   location.href = "highscores.html";
+  } else {
+    window.alert("you must enter initials to submit")
+    finalScoreScreen()
+  }
 
 }
 
