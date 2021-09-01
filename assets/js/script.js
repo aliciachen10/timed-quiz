@@ -4,7 +4,6 @@ var correctStatus = document.querySelector(".correct-status");
 var rightCounter = 0;
 var wrongCounter = 0;
 var timer;
-//var timerCount;
 
 var highScores;
 
@@ -58,15 +57,8 @@ function startTimer() {
   timer = setInterval(function() {
     timerCount--;
     timerElement.textContent = timerCount;
-    // if (timerCount >= 0) {
-    //   // Tests if win condition is met
-    //   if (isWin && timerCount > 0) {
-    //     // Clears interval and stops timer
-    //     clearInterval(timer);
-    //     winGame();
-    //   }
-    // }
-    // // Tests if time has run out
+
+    // Tests if time has run out
     if (timerCount === 0) {
       // Clears interval
       clearInterval(timer);
@@ -75,15 +67,7 @@ function startTimer() {
   }, 1000);
 }
 
-// TO DO: un-replicate the code in the start function
 function newQuestion() {
-  // console.log(answerButtonArray[1].innerHTML);
-
-  //NEXT THING TO DO ::: ONCLICK. IF CORRECT BUTTON IS CLICKED DISPLAY RIGHT OTHERWISE DISPLAY WRONG. 
-  // if (answerButtonArray[1].innerHTML === questions[1]['correct answer']) {
-  //   console.log("CORRECT!")
-  // }
-  // //need to clear the div
 
   question.textContent = questions[questionNumber]['question'];
   answers.innerHTML =""; //or answers.textContent ="";
@@ -105,10 +89,10 @@ function newQuestion() {
 };
 
 function questionCorrect(event) {
-  console.log("WHAT WAS CLICKED >>>", event.currentTarget.innerHTML);
-  console.log("CORRECT ANSWER >>>", questions[questionNumber]['correctAnswer']);
+  // console.log("WHAT WAS CLICKED >>>", event.currentTarget.innerHTML);
+  // console.log("CORRECT ANSWER >>>", questions[questionNumber]['correctAnswer']);
   if(event.currentTarget.innerHTML === questions[questionNumber]['correctAnswer']){
-    correctStatus.innerHTML = 'CORRECT!!' + rightCounter;
+    correctStatus.innerHTML = 'Correct';
 
     setTimeout(function(){
         correctStatus.innerHTML = '';
@@ -116,7 +100,7 @@ function questionCorrect(event) {
 
     rightCounter ++;
   } else {
-      correctStatus.innerHTML = 'INCORRECT' + wrongCounter;
+      correctStatus.innerHTML = 'Incorrect';
 
       setTimeout(function(){
           correctStatus.innerHTML = '';
@@ -144,43 +128,27 @@ function questionCorrect(event) {
 
 }
 
-var initials = localStorage.getItem("initials");
-
-// counter.textContent = count;
+var allEntries = [];
+var existingEntries = JSON.parse(localStorage.getItem("allEntries"));
+// var initials = localStorage.getItem("initials");
 
 function submitScore() {
   var initials = document.getElementById("initials").value;
 
+
   console.log(initials);
-  var nameAndScore = {
-    userInitials: initials,
-    userScore: rightCounter*10 - wrongCounter*5
+  var entry = {
+    "userInitials": initials,
+    "userScore": rightCounter*10 - wrongCounter*5
   }
-  localStorage.setItem("nameAndScore", JSON.stringify(nameAndScore));
+  localStorage.setItem("entry", JSON.stringify(entry));
+  existingEntries.push(entry);
+  localStorage.setItem("allEntries", JSON.stringify(existingEntries));
 
   location.href = "highscores.html";
 
-
-
-  //highScores.push({"name": text.input(), "score": rightCounter*10})
-
 }
 
-// var nameAndScore = {
-//   initials: initials, 
-//   score: score, 
-// }; //TO DO: REVISE THIS SO THAT IT IS AN ARRAY THAT CONTAINS OBJECTS? OR VICE VERSA
-
-// function renderHighScores() {
-
-//   var nameAndScore = JSON.parse(localStorage.getItem("nameAndScore"));
-
-//   console.log(nameAndScore);
-//   // if (nameAndScore !== null) {
-//   //   document.querySelector(".answers").textContent = nameAndScore.name + " - " + 
-//   //   nameAndScore.score
-//   // }
-// }
 
 function finalScoreScreen() {
 
@@ -193,26 +161,17 @@ function finalScoreScreen() {
   var input = document.createElement('input');
   input.setAttribute('id', 'initials')
   input.setAttribute('type', 'text');
-  // input.innerHTML = "Enter Initials: <input type='text' value='' id='initials' />";
+
   input.setAttribute('value', '');
   
-  // var initialz = document.getElementById("initials");
+
   text.append(input)
   answers.appendChild(text);
 
-  
-  //should probably put this up top 
   submitButton = document.createElement('button');
   submitButton.innerHTML = "Submit";
   submitButton.addEventListener("click", submitScore);
 
-//   var initials = document.querySelector(".initials");
   answers.appendChild(submitButton);
-
-  // console.log(initialz)
-
-  
-
- 
 }
 
