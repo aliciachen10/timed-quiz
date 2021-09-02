@@ -13,7 +13,7 @@ var answers = document.querySelector(".answers");
 var answerButtonArray = [];
 var questionNumber = 0;
 
-//array of questions the user will answer
+//enter the array of questions the user will answer here
 var questions =[{question: "Commonly used data types DO NOT include:", 
     choices: ["strings", "booleans", "alerts", "numbers"], 
     correctAnswer: "alerts"},
@@ -28,12 +28,12 @@ var questions =[{question: "Commonly used data types DO NOT include:",
 
     {question: "A very useful tool used during development and debugging for printing content to the debugger is:",
     choices: ["JavaScript", "terminal/bash", "for loops", "console.log"],
-    correctAnswer: "console.log"}]
+    correctAnswer: "console.log"},
 
-//the init function is called when the page loads
-function init() {
-    
-}
+    {question: "String values must be enclosed within ___ when being assigned to variables.",
+    choices: ["commas", "curly brackets", "quotes", "parentheses"],
+    correctAnswer: "quotes"}
+  ]
 
 // Attach event listener to start button to call startGame function on click
 startButton.addEventListener("click", startGame);
@@ -45,13 +45,11 @@ function startGame() {
     startButton.disabled = true; 
     startButton.remove();
 
-    //TODO: INSERT OTHER FUNCTIONS THAT BELONG HERE 
     startTimer()
     newQuestion()
 };
 
-// The setTimer function starts and stops the timer and triggers winGame() and loseGame()
-// TO DO: make timer responsive to whether the person has finished the game or not.
+// startTimer begins the timer countdown from the number specified above in timerCount
 function startTimer() {
   // Sets timer
   timer = setInterval(function() {
@@ -67,18 +65,16 @@ function startTimer() {
   }, 1000);
 }
 
+//this is what displays when each answer button is clicked
 function newQuestion() {
 
   question.textContent = questions[questionNumber]['question'];
   answers.innerHTML =""; //or answers.textContent ="";
 
-  //NEED TO INDICATE WHETHER THE QUESTION WAS CORRECT OR INCORRECT AND INCREMENT THE QUESTION; 
-
-  //CREATE FOUR ANSWER BUTTONS ONE FOR EACH POSSIBLE ANSWER IN THE ARRAY 
-
+  //CREATE ONE ANSWER BUTTONS ONE FOR EACH POSSIBLE ANSWER IN THE ARRAY 
   for (var i = 0; i < questions[questionNumber]['choices'].length; i++){
     answerButtonArray[i] = document.createElement('button');
-    answerButtonArray[i].innerHTML = questions[questionNumber]['choices'][i];
+    answerButtonArray[i].innerHTML = i+1 + ". " + questions[questionNumber]['choices'][i];
     answerButtonArray[i].addEventListener("click", questionCorrect);
     answers.appendChild(answerButtonArray[i]);
 
@@ -88,24 +84,23 @@ function newQuestion() {
   
 };
 
+// tell the user whether the answer was correct or not 
 function questionCorrect(event) {
-  // console.log("WHAT WAS CLICKED >>>", event.currentTarget.innerHTML);
-  // console.log("CORRECT ANSWER >>>", questions[questionNumber]['correctAnswer']);
-  if(event.currentTarget.innerHTML === questions[questionNumber]['correctAnswer']){
-    correctStatus.innerHTML = 'Correct';
-
+  if(event.currentTarget.innerHTML.substring(3, event.currentTarget.innerHTML.length) === questions[questionNumber]['correctAnswer']){
+    correctStatus.innerHTML = '<hr> Correct';
     setTimeout(function(){
         correctStatus.innerHTML = '';
     }, 800);
 
     rightCounter ++;
   } else {
-      correctStatus.innerHTML = 'Incorrect';
+      correctStatus.innerHTML = '<hr> Incorrect';
 
       setTimeout(function(){
           correctStatus.innerHTML = '';
       }, 800);
     wrongCounter ++;
+    //subtract time if the answer was incorrect
     timerCount -= 5;
     timerElement.textContent += " -5 seconds"
     setTimeout(function(){
@@ -116,62 +111,81 @@ function questionCorrect(event) {
 
   questionNumber ++;
 
+  //go onto a new quesiton if the button clicked is not "start quiz"
   if (event.currentTarget.innerHTML != "Start Quiz") {
     newQuestion();
   }
 
-  if (questionNumber == (questions.length - 1)) {
-    timerElement.textContent = 0
+  //once we reach the end of the questions, clear timer interval, set timerCount to zero and go to final score screen
+  if (questionNumber == (questions.length-1)) {
     clearInterval(timer)
+    timerCount = 0;
     finalScoreScreen();
   }
 
 }
 
-// var allEntries = [];
-// localStorage.setItem("allEntries", allEntries);
-// var initials = localStorage.getItem("initials");
+//get allentries from localstorage OR an empty array if it doesn't exist 
 var existingEntries = JSON.parse(localStorage.getItem("allEntries")) || [];
 
+//submit score
 function submitScore() {
   var initials = document.getElementById("initials").value;
 
-  console.log(initials);
-  var entry = {
-    "userInitials": initials,
-    "userScore": rightCounter*10 - wrongCounter*5
+  if ((rightCounter*10 - wrongCounter*5) >= 0) {
+    var entry = {
+      "userInitials": initials,
+      "userScore": rightCounter*10 - wrongCounter*5
+    }
+  } else {
+    var entry = {
+      "userInitials": initials,
+      "userScore": 0
+    }
   }
-  // localStorage.setItem("entry", JSON.stringify(entry));
+
+  //push the user's score to localstorage
   if (initials) {
   existingEntries.push(entry);
   localStorage.setItem("allEntries", JSON.stringify(existingEntries));
 
+  //go to the highscores page after finishing
   location.href = "highscores.html";
   } else {
+    //if the user has not entered initials, prompt them to enter initials
     window.alert("you must enter initials to submit")
     finalScoreScreen()
   }
 
 }
 
-
+// all done screen
 function finalScoreScreen() {
 
   timerElement.textContent = "0";
   question.textContent = "All Done!";
-  answers.innerHTML ="Your Final Score is " + (rightCounter*10 - wrongCounter*5);
 
+  // display user's score
+  if ((rightCounter*10 - wrongCounter*5) >= 0) {
+    answers.innerHTML ="Your Final Score is " + (rightCounter*10 - wrongCounter*5) + "."
+  } else {
+    //if score was negative, set it to be 0
+    answers.innerHTML = "Your Final Score is 0."
+  }
+  var space = document.createElement('br')
+  answers.appendChild(space)
 
-  var text = document.createElement('div');
+  //create a space for users to enter initials
+  var enterInitials = document.createTextNode('Enter initials: ')
+  answers.appendChild(enterInitials);
+
   var input = document.createElement('input');
   input.setAttribute('id', 'initials')
   input.setAttribute('type', 'text');
 
   input.setAttribute('value', '');
   
-
-  text.append(input)
-  answers.appendChild(text);
+  answers.appendChild(input);
 
   submitButton = document.createElement('button');
   submitButton.innerHTML = "Submit";
