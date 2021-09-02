@@ -105,23 +105,24 @@ function questionCorrect(event) {
     timerElement.textContent += " -5 seconds"
     setTimeout(function(){
       timerElement.textContent = timerCount;
-  }, 800);
-    
+    }, 800);
   };
-
-  questionNumber ++;
-
-  //go onto a new quesiton if the button clicked is not "start quiz"
-  if (event.currentTarget.innerHTML != "Start Quiz") {
-    newQuestion();
-  }
 
   //once we reach the end of the questions, clear timer interval, set timerCount to zero and go to final score screen
   if (questionNumber == (questions.length-1)) {
+    console.log(questionNumber)
     clearInterval(timer)
     timerCount = 0;
     finalScoreScreen();
   }
+
+  console.log(questionNumber)
+  questionNumber ++;
+
+    //go onto a new question if the button clicked is not "start quiz"
+    if (event.currentTarget.innerHTML != "Start Quiz") {
+      newQuestion();
+    }
 
 }
 
